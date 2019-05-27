@@ -1,0 +1,42 @@
+name: "single_deploy"
+layer {
+  name: "data"
+  type: "DummyData"
+  top: "data"
+  dummy_data_param {
+    shape {
+      dim: 8000
+      dim: 4096
+    }
+  }  
+}
+layer {
+  name: "fc7"
+  type: "InnerProduct"
+  bottom: "data"
+  top: "fc7"
+  inner_product_param {
+    num_output: 4096
+  }
+}
+layer {
+  name: "relu7"
+  type: "ReLU"
+  bottom: "fc7"
+  top: "fc7"
+}
+layer {
+  name: "fc8-ucf"
+  type: "InnerProduct"
+  bottom: "fc7"
+  top: "fc8-ucf"
+  inner_product_param {
+    num_output: 101
+  }
+}
+layer {
+  name: "probs"
+  type: "Softmax"
+  bottom: "fc8-ucf"
+  top: "probs"
+}

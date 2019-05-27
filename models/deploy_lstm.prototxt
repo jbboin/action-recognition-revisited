@@ -1,0 +1,81 @@
+name: "lstm_deploy"
+layer {
+  name: "data"
+  type: "DummyData"
+  top: "data"
+  dummy_data_param {
+    shape {
+      dim: 8000
+      dim: 4096
+      dim: 1
+      dim: 1
+    }
+  }  
+}
+layer {
+  name: "clip_markers"
+  type: "DummyData"
+  top: "clip_markers"
+  dummy_data_param {
+    shape {
+      dim: 8000
+      dim: 1 
+      dim: 1
+      dim: 1
+    }
+  }  
+}
+layer{
+  name: "reshape-data"
+  type: "Reshape"
+  bottom: "data"
+  top: "fc6-reshape"
+  reshape_param{
+    shape{
+      dim: 16 
+      dim: 500
+      dim: 4096
+    }
+  }
+}
+layer{
+  name: "reshape-cm"
+  type: "Reshape"
+  bottom: "clip_markers"
+  top: "reshape-cm"
+  reshape_param{
+    shape{
+      dim: 16
+      dim: 500
+    }
+  }
+}
+layer {
+  name: "lstm1"
+  type: "LSTM"
+  bottom: "fc6-reshape"
+  bottom: "reshape-cm"
+  top: "lstm1"
+  recurrent_param {
+    num_output: 256
+  }
+}
+layer {
+  name: "fc8-final"
+  type: "InnerProduct"
+  bottom: "lstm1"
+  top: "fc8-final"
+  inner_product_param {
+    num_output: 101
+    axis: 2
+  }
+}
+layer {
+  name: "probs"
+  type: "Softmax"
+  bottom: "fc8-final"
+  top: "probs"
+  softmax_param {
+    axis: 2
+  }
+}
