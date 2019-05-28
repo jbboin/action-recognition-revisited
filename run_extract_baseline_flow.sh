@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 DATASET_DIR="$(python -c 'import config;print(config.DATASET_DIR)')"
 LRCN_MODELS_DIR="$(python -c 'import config;print(config.LRCN_MODELS_DIR)')"
 
